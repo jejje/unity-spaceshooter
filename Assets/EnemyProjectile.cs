@@ -34,4 +34,28 @@ public class EnemyProjectile : MonoBehaviour {
 
         }
     }
+
+    void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (coll.gameObject.tag == "Player")
+        {
+            DestroyObject(gameObject);
+            //Debug.Log("I DESTROY DA PLAYA");
+            GameManager gm = FindObjectOfType<GameManager>();
+            //            gm.playerScore = gm.playerScore - 10;
+          //  Debug.Log(gm.playerScore);
+            gm.UpdateScore(-50);
+
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "Player")
+        {
+            DestroyObject(gameObject);
+            GameManager gm = FindObjectOfType<GameManager>();
+            gm.playerScore = gm.playerScore - 10;
+        }
+    }
 }

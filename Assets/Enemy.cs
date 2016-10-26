@@ -19,6 +19,8 @@ public class Enemy : MonoBehaviour {
 
     float shootTimer;
 
+    public float health = 100f;
+
     // Use this for initialization
     void Start () {
 
@@ -37,47 +39,51 @@ public class Enemy : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 
-        rb = GetComponent<Rigidbody2D>();
-
-        
+        if(transform.position.y < -30f)
+        {
+            DestroyObject(gameObject);
+            return;
+        }
 
         posEnemy = rb.position;
         posPlayer = GameObject.FindGameObjectWithTag("Player").transform.position;
-        
-
-        float a = 15f;
-        float b = -0.5f;
-
-        //Vector2 force = new Vector2(100f, -10f);
-
-
-
-        /*
-        if (posEnemy.x < posPlayer.x)
-        {
-            rb.AddForce(new Vector2(a, b));
-        } else
-        {
-            rb.AddForce(new Vector2(-a, 0f));
-        }
-        */
-
-
-
-
-        
-
-
-        // rb.MovePosition(posPlayer * Time.deltaTime);
-        
-
-
-
         ChasePlayer();
         ShootPlayer();
+
+        if(health < 1)
+        {
+            DestroyObject(this.gameObject);
+        }
     }
 
-    
+
+
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        
+        if (coll.transform.tag == "Asteroid")
+        {
+            DestroyObject(this.gameObject);
+        }
+
+        if (coll.transform.tag == "PlayerBullet")
+        {
+            health = health - 1f;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     void ShootPlayer()
     {
         if (shootTimer < Time.time)
@@ -93,7 +99,7 @@ public class Enemy : MonoBehaviour {
         position += new Vector3(0f, -3f);
         
 
-        Instantiate(enemyBulletPrefab, position, Quaternion.identity);
+        Instantiate(enemyBulletPrefab, position, Quaternion.Euler(0, 0, 180));
     }
 
     void ChasePlayer()
@@ -103,27 +109,22 @@ public class Enemy : MonoBehaviour {
         posPlayer = new Vector2 (posPlayer.x + Random.Range(0f, 10f), posPlayer.y + -30f);
 
 
-        
-
 
         Vector2 MovePos = new Vector2(
-     transform.position.x + posPlayer.x * moveSpeed, //MoveTowards on 1 axis
-     transform.position.y
- );
+            transform.position.x + posPlayer.x * moveSpeed, //MoveTowards on 1 axis
+            transform.position.y
+        );
+
         transform.position = MovePos;
 
-
-        if (transform.position.y < 20f)
+        if (transform.position.y < 10f)
         {
             // Move Towards Earth
             transform.position = Vector2.MoveTowards(posEnemy, new Vector2(0f, -100f), 3f * (3f * Time.deltaTime));
 
             //rb.AddForce(new Vector2(10f, 0f));
-
-            
         } else
         {
-            
             // Move Towards Player
             transform.position = Vector2.MoveTowards(posEnemy, posPlayer, 2f * (3f * Time.deltaTime));
         }
@@ -153,4 +154,52 @@ public class Enemy : MonoBehaviour {
         return iAmGrounded;
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+        rb = GetComponent<Rigidbody2D>();
+
+        
+
+        posEnemy = rb.position;
+        posPlayer = GameObject.FindGameObjectWithTag("Player").transform.position;
+        
+
+        float a = 15f;
+        float b = -0.5f;
+
+        //Vector2 force = new Vector2(100f, -10f);
+        
+        /*
+        if (posEnemy.x < posPlayer.x)
+        {
+            rb.AddForce(new Vector2(a, b));
+        } else
+        {
+            rb.AddForce(new Vector2(-a, 0f));
+        }
+        */
+
+    // rb.MovePosition(posPlayer * Time.deltaTime);
+
+
+
+
+
+
+
+
+
 }

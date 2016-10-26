@@ -7,7 +7,7 @@ public class Asteroid : MonoBehaviour {
     //
     public int health;
 
-
+    GameManager gm;
     // Movement
     public float MoveSpeed = 10.0f;
 
@@ -18,12 +18,13 @@ public class Asteroid : MonoBehaviour {
 
     void Awake()
     {
-        health = 25;
+        health = 100;
     }
 
     void Start()
     {
         //InitSine();
+        gm = FindObjectOfType<GameManager>();
 
     }
 
@@ -37,9 +38,23 @@ public class Asteroid : MonoBehaviour {
     void Update()
     {
 
-       // transform.Translate()
+        // transform.Translate()
 
+        if(health > 0)
+        {
+            transform.Translate(new Vector3(0, -5f, 0f) * Time.deltaTime);
+        } else
+        {
+            DestroyObject(gameObject);            
+            gm.UpdateScore(25);
+        }
 
+        if (transform.position.y < -30f)
+        {
+            DestroyObject(gameObject);
+        }
+        
+        
         //SineMovement();
     }
 
@@ -60,12 +75,12 @@ public class Asteroid : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D coll)
     {
 
-        Debug.Log("Collided");
+        //Debug.Log("Collided");
         if(coll.transform.tag == "PlayerBullet")
         {
             DestroyObject(coll.gameObject);
             health = health - 1;
-        }
+        } 
     }
 
 }

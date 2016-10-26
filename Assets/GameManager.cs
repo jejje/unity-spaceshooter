@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour {
 
     // Timers
     float timerSpawnEnemey;
-    float intervalSpawnEnemey = 3f;
+    float intervalSpawnEnemey = 10f;
 
     // Asteroids
     int totalAsteroids = 4;
@@ -31,8 +31,9 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        IntervalSpawning(10);
+	void FixedUpdate () {
+        // Spawn and point
+        IntervalSpawning(1);
 
         Asteroid[] asteroids = FindObjectsOfType<Asteroid>();
         //Debug.Log(asteroids.Length);
@@ -42,10 +43,10 @@ public class GameManager : MonoBehaviour {
             Debug.Log("No mas Ass");
             Instantiate(prefabAsteroid, new Vector2(Random.Range(-16, 9), Random.Range(100, 210)), Quaternion.identity);
         }
-        
-	}
+       UpdateScore();
+    }
 
-    void UpdateScore(int points)
+    public void UpdateScore(int points = 0)
     {
         playerScore = playerScore + points;
         textPlayerScore.text = textScore + playerScore.ToString();
@@ -55,8 +56,12 @@ public class GameManager : MonoBehaviour {
     {
         if (timerSpawnEnemey < Time.time)
         { //This checks wether real time has caught up to the timer
+
             // SPAWN
-            UpdateScore(3);
+            GameObject go = Instantiate(prefabEnemy, new Vector2(Random.Range(-16, 9), Random.Range(100, 210)), Quaternion.Euler(0, 0, 180)) as GameObject;
+            //go.transform.rotation = Quaternion.Euler(0, 0, 180);
+
+            UpdateScore(1);
            timerSpawnEnemey = Time.time + intervalSpawnEnemey + extra; //This sets the timer 3 seconds into the future
         }
     }

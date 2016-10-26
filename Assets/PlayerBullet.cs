@@ -19,4 +19,15 @@ public class PlayerBullet : MonoBehaviour {
             
         }
 	}
+
+    void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (coll.gameObject.tag == "Enemy")
+        {
+
+            GameManager gm = FindObjectOfType<GameManager>();
+            gm.UpdateScore(1);
+
+        }
+    }
 }
